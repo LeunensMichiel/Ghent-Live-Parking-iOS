@@ -32,10 +32,6 @@ final class ParkingAPI {
                 finalList.append(record.fields!)
             }
             
-            finalList = finalList.sorted {
-                $0.name! < $1.name!
-            }
-            
             onComplete(finalList)
         }
         
