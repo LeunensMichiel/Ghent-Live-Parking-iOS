@@ -46,6 +46,8 @@ class ParkingListViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.navigationItem.title = "Ghent Parking"
+        view.backgroundColor = UIColor.white
         safeArea = view.layoutMarginsGuide
         
         setupSegmentedControlView()
@@ -74,6 +76,7 @@ class ParkingListViewController: UIViewController {
         view.addSubview(tableView)
         tableView.addSubview(refreshControl)
         tableView.dataSource = self
+        tableView.delegate = self
         tableView.register(ParkingCell.self, forCellReuseIdentifier: "cellId")
         
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -82,6 +85,7 @@ class ParkingListViewController: UIViewController {
         tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         tableView.tableFooterView = UIView(frame: CGRect.zero)
+        tableView.rowHeight = 64
     }
     
     // MARK: - Actions
@@ -192,9 +196,19 @@ extension ParkingListViewController: UITableViewDataSource {
         default:
             parkingCell.availabilityLabel.textColor = .green
         }
-        
+    
         return parkingCell
     }
+}
+
+extension ParkingListViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let vc = ParkingDetailViewController()
+        vc.selectedParking = parkingList[indexPath.row]
+        vc.delegate = self
+        navigationController?.pushViewController(vc, animated: true)
+    }
+    
 }
 
 // MARK: - UITableView LocationManager

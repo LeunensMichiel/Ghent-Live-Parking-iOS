@@ -48,4 +48,5 @@ class ParkingCell: UITableViewCell {
 
         availabilityLabel.font = availabilityLabel.font.withSize(12)
     }
+    
 }

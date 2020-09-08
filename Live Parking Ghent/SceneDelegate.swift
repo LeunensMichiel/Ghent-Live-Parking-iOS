@@ -19,17 +19,18 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         let window = UIWindow(windowScene: windowScene)
         window.backgroundColor = UIColor.white
+        
 
         guard let customFont = UIFont(name: "Nunito-Regular", size: UIFont.labelFontSize) else {
             fatalError("""
-            Failed to load the "CustomFont-Light" font.
-            Make sure the font file is included in the project and the font name is spelled correctly.
+               Failed to load the "Nunito-Regular" font.
             """
             )
         }
         UILabel.appearance().font = UIFontMetrics.default.scaledFont(for: customFont)
         UILabel.appearance().adjustsFontForContentSizeCategory = true
-        window.rootViewController = ParkingListViewController() // Your initial view controller.
+        let navController = NavigationController(rootViewController: ParkingListViewController())
+        window.rootViewController = navController // Your initial view controller.
         window.makeKeyAndVisible()
         self.window = window
     }
