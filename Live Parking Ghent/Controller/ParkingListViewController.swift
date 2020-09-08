@@ -124,8 +124,9 @@ class ParkingListViewController: UIViewController {
             setupLocationManager()
             checkLocationAuthorisation()
         } else {
-            print("Location not enabled")
-            // Should be an alert
+            let alert = UIAlertController(title: "Location Denied", message: "For location functionality to work, enable location for this app in system permissions.", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+            self.present(alert, animated: true)
         }
     }
     
