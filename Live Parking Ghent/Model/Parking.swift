@@ -8,16 +8,15 @@
 
 import Foundation
 
-struct ParkingList : Codable {
+struct ParkingList: Codable {
     let records: [Records]?
 }
 
-struct Records : Codable {
+struct Records: Codable {
     let fields: Parking?
-
 }
 
-struct Parking : Codable {
+struct Parking: Codable {
     let name: String?
     let description: String?
     let totalcapacity: Int?

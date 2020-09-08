@@ -9,6 +9,10 @@
 /* Begin PBXBuildFile section */
 		D065D4242507A0DE007C2413 /* ParkingAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = D065D4232507A0DE007C2413 /* ParkingAPI.swift */; };
 		D065D4262507A438007C2413 /* Parking.swift in Sources */ = {isa = PBXBuildFile; fileRef = D065D4252507A438007C2413 /* Parking.swift */; };
+		D065D4282507B2B8007C2413 /* ParkingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D065D4272507B2B8007C2413 /* ParkingCell.swift */; };
+		D065D42C2507B947007C2413 /* Nunito-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D065D42A2507B947007C2413 /* Nunito-Regular.ttf */; };
+		D065D42D2507B947007C2413 /* Nunito-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D065D42B2507B947007C2413 /* Nunito-Bold.ttf */; };
+		D065D42F2507C31A007C2413 /* Capacity.swift in Sources */ = {isa = PBXBuildFile; fileRef = D065D42E2507C31A007C2413 /* Capacity.swift */; };
 		D07B95BD25078C8E00005DD8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D07B95BC25078C8E00005DD8 /* AppDelegate.swift */; };
 		D07B95BF25078C8E00005DD8 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D07B95BE25078C8E00005DD8 /* SceneDelegate.swift */; };
 		D07B95C125078C8E00005DD8 /* ParkingListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D07B95C025078C8E00005DD8 /* ParkingListViewController.swift */; };
@@ -19,6 +23,10 @@
 /* Begin PBXFileReference section */
 		D065D4232507A0DE007C2413 /* ParkingAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParkingAPI.swift; sourceTree = "<group>"; };
 		D065D4252507A438007C2413 /* Parking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Parking.swift; sourceTree = "<group>"; };
+		D065D4272507B2B8007C2413 /* ParkingCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParkingCell.swift; sourceTree = "<group>"; };
+		D065D42A2507B947007C2413 /* Nunito-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Nunito-Regular.ttf"; path = "../../../../../../../Downloads/Nunito/Nunito-Regular.ttf"; sourceTree = "<group>"; };
+		D065D42B2507B947007C2413 /* Nunito-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Nunito-Bold.ttf"; path = "../../../../../../../Downloads/Nunito/Nunito-Bold.ttf"; sourceTree = "<group>"; };
+		D065D42E2507C31A007C2413 /* Capacity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Capacity.swift; sourceTree = "<group>"; };
 		D07B95B925078C8E00005DD8 /* Live Parking Ghent.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Live Parking Ghent.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D07B95BC25078C8E00005DD8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		D07B95BE25078C8E00005DD8 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -39,6 +47,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		D065D4292507B8E6007C2413 /* fonts */ = {
+			isa = PBXGroup;
+			children = (
+				D065D42B2507B947007C2413 /* Nunito-Bold.ttf */,
+				D065D42A2507B947007C2413 /* Nunito-Regular.ttf */,
+			);
+			path = fonts;
+			sourceTree = "<group>";
+		};
 		D07B95B025078C8E00005DD8 = {
 			isa = PBXGroup;
 			children = (
@@ -68,6 +85,7 @@
 				D07B95BE25078C8E00005DD8 /* SceneDelegate.swift */,
 				D07B95C525078C9100005DD8 /* Assets.xcassets */,
 				D07B95CA25078C9100005DD8 /* Info.plist */,
+				D065D4292507B8E6007C2413 /* fonts */,
 			);
 			path = "Live Parking Ghent";
 			sourceTree = "<group>";
@@ -90,6 +108,7 @@
 			isa = PBXGroup;
 			children = (
 				D065D4252507A438007C2413 /* Parking.swift */,
+				D065D42E2507C31A007C2413 /* Capacity.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -122,6 +141,7 @@
 		D07B95D62507929F00005DD8 /* Cells */ = {
 			isa = PBXGroup;
 			children = (
+				D065D4272507B2B8007C2413 /* ParkingCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -184,7 +204,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D065D42C2507B947007C2413 /* Nunito-Regular.ttf in Resources */,
 				D07B95C925078C9100005DD8 /* LaunchScreen.storyboard in Resources */,
+				D065D42D2507B947007C2413 /* Nunito-Bold.ttf in Resources */,
 				D07B95C625078C9100005DD8 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -198,8 +220,10 @@
 			files = (
 				D07B95C125078C8E00005DD8 /* ParkingListViewController.swift in Sources */,
 				D065D4242507A0DE007C2413 /* ParkingAPI.swift in Sources */,
+				D065D4282507B2B8007C2413 /* ParkingCell.swift in Sources */,
 				D065D4262507A438007C2413 /* Parking.swift in Sources */,
 				D07B95BD25078C8E00005DD8 /* AppDelegate.swift in Sources */,
+				D065D42F2507C31A007C2413 /* Capacity.swift in Sources */,
 				D07B95BF25078C8E00005DD8 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

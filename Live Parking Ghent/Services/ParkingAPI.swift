@@ -18,7 +18,7 @@ final class ParkingAPI {
             return print("Error with fetching URL")
         }
         
-        let task = URLSession.shared.dataTask(with: url) { (data, resp, err) in
+        let task = URLSession.shared.dataTask(with: url) { data, _, _ in
             guard let data = data else {
                 return print("Data was nil")
             }
@@ -27,9 +27,13 @@ final class ParkingAPI {
                 return print("Error decoding JSON")
             }
             
-            var finalList : [Parking] = []
+            var finalList: [Parking] = []
             for record in parkingList.records! {
                 finalList.append(record.fields!)
+            }
+            
+            finalList = finalList.sorted {
+                $0.name! < $1.name!
             }
             
             onComplete(finalList)

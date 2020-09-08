@@ -9,18 +9,26 @@
 import UIKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
-
     var window: UIWindow?
-
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let windowScene = (scene as? UIWindowScene) else { return }
-        
+
         let window = UIWindow(windowScene: windowScene)
         window.backgroundColor = UIColor.white
+
+        guard let customFont = UIFont(name: "Nunito-Regular", size: UIFont.labelFontSize) else {
+            fatalError("""
+            Failed to load the "CustomFont-Light" font.
+            Make sure the font file is included in the project and the font name is spelled correctly.
+            """
+            )
+        }
+        UILabel.appearance().font = UIFontMetrics.default.scaledFont(for: customFont)
+        UILabel.appearance().adjustsFontForContentSizeCategory = true
         window.rootViewController = ParkingListViewController() // Your initial view controller.
         window.makeKeyAndVisible()
         self.window = window
@@ -53,7 +61,4 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Use this method to save data, release shared resources, and store enough scene-specific state information
         // to restore the scene back to its current state.
     }
-
-
 }
-
