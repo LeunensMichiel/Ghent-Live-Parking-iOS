@@ -6,13 +6,43 @@
 //  Copyright © 2020 Leunes Media. All rights reserved.
 //
 
+import BackgroundTasks
 import UIKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        BGTaskScheduler.shared.register(
+            forTaskWithIdentifier: "com.leunesmedia.parkingfetch",
+            using: nil) { task in
+            self.handleAppRefreshTask(task: task as! BGAppRefreshTask)
+        }
         return true
+    }
+
+    func handleAppRefreshTask(task: BGAppRefreshTask) {
+        task.expirationHandler = {
+            ParkingAPI.urlSession.invalidateAndCancel()
+        }
+
+        let fetchParkings = { (fetchedParkings: [Parking]) in
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "parkingFetched"), object: self, userInfo: ["parkings": fetchedParkings])
+            task.setTaskCompleted(success: true)
+        }
+
+        ParkingAPI.parkingAPI.fetchParkingList(onComplete: fetchParkings)
+        scheduleBackgroundFetch()
+    }
+
+    func scheduleBackgroundFetch() {
+        let parkingFetchTask = BGAppRefreshTaskRequest(identifier: "com.leunesmedia.parkingfetch")
+        parkingFetchTask.earliestBeginDate = Date(timeIntervalSinceNow: 900) // Every half hour
+        do {
+            try BGTaskScheduler.shared.submit(parkingFetchTask)
+        } catch {
+            print("Unable to submit background task: \(error.localizedDescription)")
+        }
     }
 
     // MARK: UISceneSession Lifecycle

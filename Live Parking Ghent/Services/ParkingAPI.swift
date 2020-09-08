@@ -10,6 +10,8 @@ import Foundation
 
 final class ParkingAPI {
     static let parkingAPI = ParkingAPI()
+    static let urlSession = URLSession(configuration: .default)
+
     
     func fetchParkingList(onComplete: @escaping ([Parking]) -> ()) {
         // TODO: - Don't Hardcode URL
@@ -18,7 +20,7 @@ final class ParkingAPI {
             return print("Error with fetching URL")
         }
         
-        let task = URLSession.shared.dataTask(with: url) { data, _, _ in
+        let task = ParkingAPI.urlSession.dataTask(with: url) { data, _, _ in
             guard let data = data else {
                 return print("Data was nil")
             }

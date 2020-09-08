@@ -21,4 +21,5 @@ struct Parking: Codable {
     let description: String?
     let totalcapacity: Int?
     let availablecapacity: Int?
+    let geo_location: [Double]?
 }
