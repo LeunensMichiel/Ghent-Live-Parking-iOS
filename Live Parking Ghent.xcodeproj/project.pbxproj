@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D065D4242507A0DE007C2413 /* ParkingAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = D065D4232507A0DE007C2413 /* ParkingAPI.swift */; };
+		D065D4262507A438007C2413 /* Parking.swift in Sources */ = {isa = PBXBuildFile; fileRef = D065D4252507A438007C2413 /* Parking.swift */; };
 		D07B95BD25078C8E00005DD8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D07B95BC25078C8E00005DD8 /* AppDelegate.swift */; };
 		D07B95BF25078C8E00005DD8 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D07B95BE25078C8E00005DD8 /* SceneDelegate.swift */; };
 		D07B95C125078C8E00005DD8 /* ParkingListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D07B95C025078C8E00005DD8 /* ParkingListViewController.swift */; };
@@ -15,6 +17,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		D065D4232507A0DE007C2413 /* ParkingAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParkingAPI.swift; sourceTree = "<group>"; };
+		D065D4252507A438007C2413 /* Parking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Parking.swift; sourceTree = "<group>"; };
 		D07B95B925078C8E00005DD8 /* Live Parking Ghent.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Live Parking Ghent.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D07B95BC25078C8E00005DD8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		D07B95BE25078C8E00005DD8 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -85,6 +89,7 @@
 		D07B95D22507923C00005DD8 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				D065D4252507A438007C2413 /* Parking.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -92,6 +97,7 @@
 		D07B95D32507924300005DD8 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				D065D4232507A0DE007C2413 /* ParkingAPI.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -191,6 +197,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				D07B95C125078C8E00005DD8 /* ParkingListViewController.swift in Sources */,
+				D065D4242507A0DE007C2413 /* ParkingAPI.swift in Sources */,
+				D065D4262507A438007C2413 /* Parking.swift in Sources */,
 				D07B95BD25078C8E00005DD8 /* AppDelegate.swift in Sources */,
 				D07B95BF25078C8E00005DD8 /* SceneDelegate.swift in Sources */,
 			);

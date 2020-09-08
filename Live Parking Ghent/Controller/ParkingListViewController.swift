@@ -11,23 +11,36 @@ import UIKit
 class ParkingListViewController: UIViewController {
     let tableView = UITableView()
     var safeArea: UILayoutGuide!
+    var parkingList : [Parking] = []
     
 
     override func viewDidLoad() {
         super.viewDidLoad()
         safeArea = view.layoutMarginsGuide
-        tableView.dataSource = self
-        setupView()
+        
+        setupTableView()
+        
+        let fetchParkings = { (fetchedParkings: [Parking]) in
+            DispatchQueue.main.async {
+                self.parkingList = fetchedParkings
+                self.tableView.reloadData()
+            }
+        }
+        
+        ParkingAPI.parkingAPI.fetchParkingList(onComplete: fetchParkings)
     }
     // MARK: - Setup View
-    func setupView() {
+    func setupTableView() {
         view.addSubview(tableView)
+        
+        tableView.dataSource = self
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cellId")
+        
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.topAnchor.constraint(equalTo: safeArea.topAnchor).isActive = true
         tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-        
     }
     
 }
@@ -36,12 +49,12 @@ class ParkingListViewController: UIViewController {
 
 extension ParkingListViewController : UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 7
+        return parkingList.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = UITableViewCell()
-        cell.textLabel?.text = "Parking Ghent"
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cellId", for: indexPath)
+        cell.textLabel?.text = parkingList[indexPath.row].name
         return cell
     }
     
