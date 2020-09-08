@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		D07B95BD25078C8E00005DD8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D07B95BC25078C8E00005DD8 /* AppDelegate.swift */; };
 		D07B95BF25078C8E00005DD8 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D07B95BE25078C8E00005DD8 /* SceneDelegate.swift */; };
-		D07B95C125078C8E00005DD8 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D07B95C025078C8E00005DD8 /* ViewController.swift */; };
+		D07B95C125078C8E00005DD8 /* ParkingListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D07B95C025078C8E00005DD8 /* ParkingListViewController.swift */; };
 		D07B95C625078C9100005DD8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D07B95C525078C9100005DD8 /* Assets.xcassets */; };
 		D07B95C925078C9100005DD8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D07B95C725078C9100005DD8 /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
@@ -18,7 +18,7 @@
 		D07B95B925078C8E00005DD8 /* Live Parking Ghent.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Live Parking Ghent.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D07B95BC25078C8E00005DD8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		D07B95BE25078C8E00005DD8 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		D07B95C025078C8E00005DD8 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		D07B95C025078C8E00005DD8 /* ParkingListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParkingListViewController.swift; sourceTree = "<group>"; };
 		D07B95C525078C9100005DD8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D07B95C825078C9100005DD8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		D07B95CA25078C9100005DD8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -54,14 +54,70 @@
 		D07B95BB25078C8E00005DD8 /* Live Parking Ghent */ = {
 			isa = PBXGroup;
 			children = (
+				D07B95D52507925100005DD8 /* Controller */,
+				D07B95D42507924A00005DD8 /* View */,
+				D07B95D32507924300005DD8 /* Services */,
+				D07B95D22507923C00005DD8 /* Model */,
+				D07B95D12507922800005DD8 /* Extension */,
+				D07B95D02507921600005DD8 /* CoreData */,
 				D07B95BC25078C8E00005DD8 /* AppDelegate.swift */,
 				D07B95BE25078C8E00005DD8 /* SceneDelegate.swift */,
-				D07B95C025078C8E00005DD8 /* ViewController.swift */,
 				D07B95C525078C9100005DD8 /* Assets.xcassets */,
-				D07B95C725078C9100005DD8 /* LaunchScreen.storyboard */,
 				D07B95CA25078C9100005DD8 /* Info.plist */,
 			);
 			path = "Live Parking Ghent";
+			sourceTree = "<group>";
+		};
+		D07B95D02507921600005DD8 /* CoreData */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = CoreData;
+			sourceTree = "<group>";
+		};
+		D07B95D12507922800005DD8 /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Extension;
+			sourceTree = "<group>";
+		};
+		D07B95D22507923C00005DD8 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		D07B95D32507924300005DD8 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		D07B95D42507924A00005DD8 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				D07B95D62507929F00005DD8 /* Cells */,
+				D07B95C725078C9100005DD8 /* LaunchScreen.storyboard */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		D07B95D52507925100005DD8 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				D07B95C025078C8E00005DD8 /* ParkingListViewController.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		D07B95D62507929F00005DD8 /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Cells;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -134,7 +190,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D07B95C125078C8E00005DD8 /* ViewController.swift in Sources */,
+				D07B95C125078C8E00005DD8 /* ParkingListViewController.swift in Sources */,
 				D07B95BD25078C8E00005DD8 /* AppDelegate.swift in Sources */,
 				D07B95BF25078C8E00005DD8 /* SceneDelegate.swift in Sources */,
 			);
