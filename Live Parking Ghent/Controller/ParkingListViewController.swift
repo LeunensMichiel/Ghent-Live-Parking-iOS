@@ -52,6 +52,7 @@ class ParkingListViewController: UIViewController {
         
         setupSegmentedControlView()
         setupTableView()
+        checkLocationServices()
         
         fetchParkings()
     }
