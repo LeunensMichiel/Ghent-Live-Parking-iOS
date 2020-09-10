@@ -1,4 +1,6 @@
+import CoreData
 import CoreLocation
+import MapKit
 import UIKit
 
 class ParkingListViewController: UIViewController {
@@ -7,7 +9,9 @@ class ParkingListViewController: UIViewController {
     let refreshControl = UIRefreshControl()
     var safeArea: UILayoutGuide!
     var parkingList: [Parking] = []
+    let mapView = MKMapView()
     let locationManager = CLLocationManager()
+    var savedParking: ParkingDM?
     
     fileprivate func fetchParkings() {
         let fetchParkings = { (fetchedParkings: [Parking]) in
@@ -15,6 +19,8 @@ class ParkingListViewController: UIViewController {
                 self.parkingList = fetchedParkings
                 self.sortParkings()
                 self.tableView.reloadData()
+                self.tableView.layoutIfNeeded()
+                self.tableView.heightAnchor.constraint(equalToConstant: self.tableView.contentSize.height).isActive = true
                 self.refreshControl.endRefreshing()
             }
         }
@@ -27,7 +33,6 @@ class ParkingListViewController: UIViewController {
             forName: NSNotification.Name(rawValue: "parkingFetched"),
             object: nil,
             queue: nil) { notification in
-            print("notification received")
             if let uInfo = notification.userInfo, let fetchedParkings = uInfo["parkings"] as? [Parking] {
                 self.parkingList = fetchedParkings
                 self.sortParkings()
@@ -38,15 +43,27 @@ class ParkingListViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.navigationItem.title = "Ghent Parking"
+        navigationItem.title = "Ghent Parking"
         view.backgroundColor = UIColor.white
         safeArea = view.layoutMarginsGuide
         
+        checkLocationServices()
+        fetchParkings()
+        
         setupSegmentedControlView()
         setupTableView()
-        checkLocationServices()
-        
-        fetchParkings()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        savedParking = CoreDataManager.sharedCoreData.fetchParkings()?.first
+        guard let localParking = savedParking else {
+            return
+        }
+        if localParking.isParked {
+            setupMapView()
+        } else {
+            mapView.removeFromSuperview()
+        }
     }
     
     // MARK: - Setup Views
@@ -67,18 +84,38 @@ class ParkingListViewController: UIViewController {
     
     func setupTableView() {
         view.addSubview(tableView)
+        tableView.estimatedRowHeight = 64
+        tableView.rowHeight = 64
+
         tableView.addSubview(refreshControl)
         tableView.dataSource = self
         tableView.delegate = self
         tableView.register(ParkingCell.self, forCellReuseIdentifier: "cellId")
         
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.topAnchor.constraint(equalTo: segmentedControl.bottomAnchor, constant: 32).isActive = true
+        tableView.topAnchor.constraint(equalTo: segmentedControl.bottomAnchor, constant: 16).isActive = true
         tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-        tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-        tableView.tableFooterView = UIView(frame: CGRect.zero)
-        tableView.rowHeight = 64
+        
+        // Sorted Items where wrongfully indexed thus refreshing the data fixes the problem.
+        tableView.reloadData()
+
+    }
+    
+    func setupMapView() {
+        view.addSubview(mapView)
+        let initialLocation = CLLocation(latitude: savedParking!.latitude, longitude: savedParking!.longitude)
+        mapView.centerToLocation(initialLocation)
+        let parkingAnnotation = MKPointAnnotation()
+        parkingAnnotation.title = savedParking!.name
+        parkingAnnotation.coordinate = CLLocationCoordinate2D(latitude: savedParking!.latitude, longitude: savedParking!.longitude)
+        mapView.addAnnotation(parkingAnnotation)
+        mapView.showsUserLocation = true
+        mapView.translatesAutoresizingMaskIntoConstraints = false
+        mapView.topAnchor.constraint(equalTo: tableView.bottomAnchor, constant: 32).isActive = true
+        mapView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        mapView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+        mapView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
     }
     
     // MARK: - Actions
@@ -123,7 +160,7 @@ class ParkingListViewController: UIViewController {
         } else {
             let alert = UIAlertController(title: "Location Denied", message: "For location functionality to work, enable location for this app in system permissions.", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-            self.present(alert, animated: true)
+            present(alert, animated: true)
         }
     }
     
@@ -134,13 +171,11 @@ class ParkingListViewController: UIViewController {
         case .restricted:
             let alert = UIAlertController(title: "Location Restricted", message: "For location functionality to work, enable location for this app in system permissions.", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-            self.present(alert, animated: true)
-            break
+            present(alert, animated: true)
         case .denied:
             let alert = UIAlertController(title: "Location Denied", message: "For location functionality to work, enable location for this app in system permissions.", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-            self.present(alert, animated: true)
-            break
+            present(alert, animated: true)
         case .authorizedAlways:
             break
         case .authorizedWhenInUse:
@@ -189,7 +224,7 @@ extension ParkingListViewController: UITableViewDataSource {
         default:
             parkingCell.availabilityLabel.textColor = .green
         }
-    
+        
         return parkingCell
     }
 }
@@ -201,7 +236,6 @@ extension ParkingListViewController: UITableViewDelegate {
         vc.delegate = self
         navigationController?.pushViewController(vc, animated: true)
     }
-    
 }
 
 // MARK: - UITableView LocationManager
@@ -214,5 +248,22 @@ extension ParkingListViewController: CLLocationManagerDelegate {
     
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         checkLocationAuthorisation()
+    }
+}
+
+extension ParkingListViewController: MKMapViewDelegate {
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        guard annotation is MKPointAnnotation else { return nil }
+        
+        var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: "parking")
+        
+        if annotationView == nil {
+            annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "parking")
+            annotationView!.canShowCallout = true
+        } else {
+            annotationView!.annotation = annotation
+        }
+        
+        return annotationView
     }
 }

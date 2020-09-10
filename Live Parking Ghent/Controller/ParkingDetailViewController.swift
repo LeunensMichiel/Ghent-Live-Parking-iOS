@@ -8,7 +8,7 @@ class ParkingDetailViewController: UIViewController {
 
     weak var delegate: ParkingListViewController!
     var safeArea: UILayoutGuide!
-    var mapView = MKMapView()
+    let mapView = MKMapView()
 
     let nameLabel = UILabel()
     let addressLabel = UILabel()
@@ -27,7 +27,6 @@ class ParkingDetailViewController: UIViewController {
         setupContactLabel()
         setupParkButton()
         setupMapView()
-
 
     }
 
@@ -66,7 +65,7 @@ class ParkingDetailViewController: UIViewController {
         parkButton.translatesAutoresizingMaskIntoConstraints = false
         parkButton.topAnchor.constraint(equalTo: contactLabel.bottomAnchor, constant: 8).isActive = true
         parkButton.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor).isActive = true
-//        parkButton.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor).isActive = true
+
         parkButton.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
 
         guard let localParking = savedParking else {
@@ -110,18 +109,6 @@ class ParkingDetailViewController: UIViewController {
         savedParking = CoreDataManager.sharedCoreData.fetchParking(withId: selectedParking!.id!)!
         parkButton.setTitle(savedParking!.isParked ? "Parked" : "Park Here", for: .normal)
 //        }
-    }
-}
-
-extension MKMapView {
-    func centerToLocation(
-        _ location: CLLocation,
-        regionRadius: CLLocationDistance = 1000) {
-        let coordinateRegion = MKCoordinateRegion(
-            center: location.coordinate,
-            latitudinalMeters: regionRadius,
-            longitudinalMeters: regionRadius)
-        setRegion(coordinateRegion, animated: true)
     }
 }
 
