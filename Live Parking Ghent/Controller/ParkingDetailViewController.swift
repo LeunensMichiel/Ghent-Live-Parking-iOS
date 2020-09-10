@@ -1,16 +1,11 @@
-//
-//  ParkingDetailViewController.swift
-//  Live Parking Ghent
-//
-//  Created by Michiel Leunens on 08/09/2020.
-//  Copyright © 2020 Leunes Media. All rights reserved.
-//
-
+import CoreData
 import MapKit
 import UIKit
 
 class ParkingDetailViewController: UIViewController {
     var selectedParking: Parking?
+    var savedParking: ParkingDM?
+
     weak var delegate: ParkingListViewController!
     var safeArea: UILayoutGuide!
     var mapView = MKMapView()
@@ -18,15 +13,22 @@ class ParkingDetailViewController: UIViewController {
     let nameLabel = UILabel()
     let addressLabel = UILabel()
     let contactLabel = UILabel()
+    let parkButton = UIButton(frame: CGRect(x: 100, y: 400, width: 100, height: 64))
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        savedParking = CoreDataManager.sharedCoreData.fetchParkings()?.first
+
         safeArea = view.layoutMarginsGuide
         view.backgroundColor = UIColor.white
+
         setupNameLabel()
         setupAddressLabel()
         setupContactLabel()
+        setupParkButton()
         setupMapView()
+
+
     }
 
     func setupNameLabel() {
@@ -57,6 +59,23 @@ class ParkingDetailViewController: UIViewController {
         contactLabel.text = selectedParking?.contactinfo
     }
 
+    func setupParkButton() {
+        view.addSubview(parkButton)
+
+        parkButton.setTitleColor(.systemBlue, for: .normal)
+        parkButton.translatesAutoresizingMaskIntoConstraints = false
+        parkButton.topAnchor.constraint(equalTo: contactLabel.bottomAnchor, constant: 8).isActive = true
+        parkButton.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor).isActive = true
+//        parkButton.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor).isActive = true
+        parkButton.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
+
+        guard let localParking = savedParking else {
+            parkButton.setTitle("Park Here", for: .normal)
+            return
+        }
+        parkButton.setTitle(localParking.isParked && localParking.id == selectedParking?.id ? "Parked" : "Park Here", for: .normal)
+    }
+
     func setupMapView() {
         view.addSubview(mapView)
 
@@ -68,10 +87,29 @@ class ParkingDetailViewController: UIViewController {
         mapView.addAnnotation(parkingAnnotation)
         mapView.showsUserLocation = true
         mapView.translatesAutoresizingMaskIntoConstraints = false
-        mapView.topAnchor.constraint(equalTo: contactLabel.bottomAnchor, constant: 8).isActive = true
+        mapView.topAnchor.constraint(equalTo: parkButton.bottomAnchor, constant: 8).isActive = true
         mapView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         mapView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         mapView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+    }
+
+    @objc func buttonTapped(sender: UIButton) {
+//        DispatchQueue.main.async {
+        if savedParking == nil {
+            CoreDataManager.sharedCoreData.createParking(parking: selectedParking!)
+            savedParking = CoreDataManager.sharedCoreData.fetchParkings()?.first
+        }
+
+        if savedParking?.id == selectedParking?.id {
+            savedParking?.isParked = !savedParking!.isParked
+            CoreDataManager.sharedCoreData.updateParking(parking: savedParking!)
+        } else {
+            CoreDataManager.sharedCoreData.deleteParking(parking: savedParking!)
+            CoreDataManager.sharedCoreData.createParking(parking: selectedParking!)
+        }
+        savedParking = CoreDataManager.sharedCoreData.fetchParking(withId: selectedParking!.id!)!
+        parkButton.setTitle(savedParking!.isParked ? "Parked" : "Park Here", for: .normal)
+//        }
     }
 }
 
