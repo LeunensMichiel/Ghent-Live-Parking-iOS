@@ -48,6 +48,7 @@ class ParkingCell: UITableViewCell {
     func setupAvailabilityLabel() {
         availabilityLabel.translatesAutoresizingMaskIntoConstraints = false
         availabilityLabel.font = availabilityLabel.font.withSize(14)
+        availabilityLabel.textColor = .systemGray
     }
     
     func setupStackView() {

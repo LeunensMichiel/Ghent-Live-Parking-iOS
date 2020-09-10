@@ -10,7 +10,7 @@ class ParkingListViewController: UIViewController {
     let segmentedControl = UISegmentedControl(items: ["Alphabetically", "Location", "Availability"])
     let parkingLabel = UILabel()
     let noParkingsLabel = UILabel()
-
+    
     var safeArea: UILayoutGuide!
     
     let locationManager = CLLocationManager()
@@ -24,12 +24,13 @@ class ParkingListViewController: UIViewController {
         view.backgroundColor = UIColor.white
         safeArea = view.layoutMarginsGuide
         
-        checkLocationServices()
-        fetchParkings()
-        
         setupSegmentedControlView()
         setupTableView()
-        setupLabels()
+        setupParkingLabel()
+        setupPlaceholderLabel()
+        
+        checkLocationServices()
+        fetchParkings()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -42,7 +43,7 @@ class ParkingListViewController: UIViewController {
             setupMapView()
         } else {
             mapView.removeFromSuperview()
-            view.addSubview(noParkingsLabel)
+            setupPlaceholderLabel()
         }
     }
     
@@ -68,22 +69,18 @@ class ParkingListViewController: UIViewController {
         view.addSubview(tableView)
         tableView.estimatedRowHeight = 64
         tableView.rowHeight = 64
-
+        
         tableView.addSubview(refreshControl)
         tableView.dataSource = self
         tableView.delegate = self
         tableView.register(ParkingCell.self, forCellReuseIdentifier: "cellId")
-
+        
         tableView.separatorStyle = UITableViewCell.SeparatorStyle.none
-
+        
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.topAnchor.constraint(equalTo: segmentedControl.bottomAnchor, constant: 32).isActive = true
         tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-        
-        // Sorted Items where wrongfully indexed thus refreshing the data fixes the problem.
-        tableView.reloadData()
-
     }
     
     func setupMapView() {
@@ -96,30 +93,33 @@ class ParkingListViewController: UIViewController {
         mapView.addAnnotation(parkingAnnotation)
         mapView.showsUserLocation = true
         mapView.translatesAutoresizingMaskIntoConstraints = false
-        mapView.topAnchor.constraint(equalTo: parkingLabel.bottomAnchor, constant: 32).isActive = true
+        mapView.topAnchor.constraint(equalTo: parkingLabel.bottomAnchor, constant: 8).isActive = true
         mapView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         mapView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         mapView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
     }
     
-    func setupLabels() {
+    func setupParkingLabel() {
         view.addSubview(parkingLabel)
         parkingLabel.text = "Jouw Parking"
         parkingLabel.font = UIFont(name: "Nunito-Bold", size: 17)
-
+        
         parkingLabel.translatesAutoresizingMaskIntoConstraints = false
         parkingLabel.topAnchor.constraint(equalTo: tableView.bottomAnchor, constant: 32).isActive = true
         parkingLabel.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor).isActive = true
         parkingLabel.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor).isActive = true
-        
+    }
+    
+    func setupPlaceholderLabel() {
         view.addSubview(noParkingsLabel)
         noParkingsLabel.text = "Je staat momenteel nergens geparkeerd."
         noParkingsLabel.font = UIFont(name: "Nunito-Regular", size: 12)
-
+        
         noParkingsLabel.translatesAutoresizingMaskIntoConstraints = false
         noParkingsLabel.topAnchor.constraint(equalTo: parkingLabel.bottomAnchor, constant: 32).isActive = true
         noParkingsLabel.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor).isActive = true
         noParkingsLabel.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor).isActive = true
+        noParkingsLabel.textColor = .systemGray
     }
     
     // MARK: - Actions
@@ -152,11 +152,6 @@ class ParkingListViewController: UIViewController {
     
     // MARK: - Location
     
-    func setupLocationManager() {
-        locationManager.delegate = self
-        locationManager.desiredAccuracy = kCLLocationAccuracyBest
-    }
-    
     func checkLocationServices() {
         if CLLocationManager.locationServicesEnabled() {
             setupLocationManager()
@@ -166,6 +161,11 @@ class ParkingListViewController: UIViewController {
             alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
             present(alert, animated: true)
         }
+    }
+    
+    func setupLocationManager() {
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
     }
     
     func checkLocationAuthorisation() {
@@ -184,7 +184,9 @@ class ParkingListViewController: UIViewController {
             break
         case .authorizedWhenInUse:
             if let location = locationManager.location {
-                sortOnLocation(userLocation: location)
+                if segmentedControl.selectedSegmentIndex == 1 {
+                    sortOnLocation(userLocation: location)
+                }
             }
             locationManager.startUpdatingLocation()
             break
@@ -197,8 +199,8 @@ class ParkingListViewController: UIViewController {
         parkingList = parkingList.sortedByDistance(to: userLocation)
     }
     
-    
     // MARK: - ParkingAPI
+    
     fileprivate func fetchParkings() {
         let fetchParkings = { (fetchedParkings: [Parking]) in
             DispatchQueue.main.async {
@@ -210,7 +212,6 @@ class ParkingListViewController: UIViewController {
                 self.refreshControl.endRefreshing()
             }
         }
-        
         ParkingAPI.parkingAPI.fetchParkingList(onComplete: fetchParkings)
     }
     
@@ -227,7 +228,6 @@ class ParkingListViewController: UIViewController {
         }
     }
 }
-
 
 // MARK: - UITableView DataSource
 
@@ -276,7 +276,9 @@ extension ParkingListViewController: UITableViewDelegate {
 extension ParkingListViewController: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.last else { return }
-        sortOnLocation(userLocation: location)
+        if segmentedControl.selectedSegmentIndex == 1 {
+            sortOnLocation(userLocation: location)
+        }
     }
     
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
@@ -287,16 +289,13 @@ extension ParkingListViewController: CLLocationManagerDelegate {
 extension ParkingListViewController: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         guard annotation is MKPointAnnotation else { return nil }
-        
         var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: "parking")
-        
         if annotationView == nil {
             annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "parking")
             annotationView!.canShowCallout = true
         } else {
             annotationView!.annotation = annotation
         }
-        
         return annotationView
     }
 }

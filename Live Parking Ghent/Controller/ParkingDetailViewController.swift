@@ -140,7 +140,7 @@ class ParkingDetailViewController: UIViewController {
     }
 
     @objc func buttonTapped(sender: UIButton) {
-//        DispatchQueue.main.async {
+//        DispatchQueue.main.async {}
         if savedParking == nil {
             CoreDataManager.sharedCoreData.createParking(parking: selectedParking!)
             savedParking = CoreDataManager.sharedCoreData.fetchParkings()?.first
@@ -154,10 +154,8 @@ class ParkingDetailViewController: UIViewController {
             CoreDataManager.sharedCoreData.createParking(parking: selectedParking!)
         }
         savedParking = CoreDataManager.sharedCoreData.fetchParking(withId: selectedParking!.id!)!
-        parkButton.setTitle(savedParking!.isParked ? "Parked" : "Drive Away", for: .normal)
+        parkButton.setTitle(savedParking!.isParked ? "Drive Away" : "Park Here", for: .normal)
         parkButton.backgroundColor = UIColor(named: savedParking!.isParked && savedParking!.id == selectedParking?.id ? "StatusRed" : "AccentDark")
-
-//        }
     }
 }
 

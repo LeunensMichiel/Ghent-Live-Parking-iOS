@@ -1,17 +1,21 @@
 import UIKit
 
 class ParkingNavigationController: UINavigationController {
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         styleNavbar()
     }
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         setNeedsStatusBarAppearanceUpdate()
     }
+    
     override var preferredStatusBarStyle: UIStatusBarStyle {
         .lightContent
     }
+    
     fileprivate func styleNavbar() {
         let appearance = UINavigationBarAppearance()
         
