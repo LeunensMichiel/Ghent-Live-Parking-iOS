@@ -17,9 +17,11 @@ class ParkingNavigationController: UINavigationController {
         
         appearance.titleTextAttributes = [.foregroundColor: UIColor.white]
         appearance.backgroundColor = UIColor(named: "AccentDark")
+        UINavigationBar.appearance().tintColor = UIColor.white
         
         navigationBar.standardAppearance = appearance
         navigationBar.compactAppearance = appearance
         navigationBar.scrollEdgeAppearance = appearance
+        
     }
 }
