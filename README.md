@@ -6,8 +6,8 @@ The emulator is made with `UIKit` to support iOS13. App is tested on an `iPhone 
 
 All functional requirements have been met.
 
-![Home Screen](https://imgur.com/oG0u7PK)
-![Detail Screen](https://imgur.com/hhqsYjY)
+![Home Screen](https://i.imgur.com/oG0u7PK.png)
+![Detail Screen](https://i.imgur.com/hhqsYjY.png)
 
 ---
 
