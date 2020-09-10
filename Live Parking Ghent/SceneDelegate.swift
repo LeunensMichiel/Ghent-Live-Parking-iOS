@@ -29,7 +29,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
         UILabel.appearance().font = UIFontMetrics.default.scaledFont(for: customFont)
         UILabel.appearance().adjustsFontForContentSizeCategory = true
-        let navController = NavigationController(rootViewController: ParkingListViewController())
+        let navController = ParkingNavigationController(rootViewController: ParkingListViewController())
         window.rootViewController = navController // Your initial view controller.
         window.makeKeyAndVisible()
         self.window = window

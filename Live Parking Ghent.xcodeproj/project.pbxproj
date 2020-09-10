@@ -12,7 +12,7 @@
 		D013AA162507ED6F00A78F53 /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = D013AA152507ED6F00A78F53 /* Location.swift */; };
 		D013AA182508083B00A78F53 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = D013AA172508083B00A78F53 /* README.md */; };
 		D013AA1A2508089A00A78F53 /* ParkingDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D013AA192508089A00A78F53 /* ParkingDetailViewController.swift */; };
-		D013AA1C25080E2500A78F53 /* NavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D013AA1B25080E2500A78F53 /* NavigationController.swift */; };
+		D013AA1C25080E2500A78F53 /* ParkingNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D013AA1B25080E2500A78F53 /* ParkingNavigationController.swift */; };
 		D02A91F6250940BC0062F471 /* ParkingDataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = D02A91F4250940BC0062F471 /* ParkingDataModel.xcdatamodeld */; };
 		D065D4242507A0DE007C2413 /* ParkingAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = D065D4232507A0DE007C2413 /* ParkingAPI.swift */; };
 		D065D4262507A438007C2413 /* Parking.swift in Sources */ = {isa = PBXBuildFile; fileRef = D065D4252507A438007C2413 /* Parking.swift */; };
@@ -32,7 +32,7 @@
 		D013AA152507ED6F00A78F53 /* Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
 		D013AA172508083B00A78F53 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		D013AA192508089A00A78F53 /* ParkingDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParkingDetailViewController.swift; sourceTree = "<group>"; };
-		D013AA1B25080E2500A78F53 /* NavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationController.swift; sourceTree = "<group>"; };
+		D013AA1B25080E2500A78F53 /* ParkingNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParkingNavigationController.swift; sourceTree = "<group>"; };
 		D02A91F5250940BC0062F471 /* ParkingDataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ParkingDataModel.xcdatamodel; sourceTree = "<group>"; };
 		D065D4232507A0DE007C2413 /* ParkingAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParkingAPI.swift; sourceTree = "<group>"; };
 		D065D4252507A438007C2413 /* Parking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Parking.swift; sourceTree = "<group>"; };
@@ -151,7 +151,7 @@
 			children = (
 				D07B95C025078C8E00005DD8 /* ParkingListViewController.swift */,
 				D013AA192508089A00A78F53 /* ParkingDetailViewController.swift */,
-				D013AA1B25080E2500A78F53 /* NavigationController.swift */,
+				D013AA1B25080E2500A78F53 /* ParkingNavigationController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -246,7 +246,7 @@
 				D07B7759250948E7001C2BDD /* CoreDataManager.swift in Sources */,
 				D07B95BD25078C8E00005DD8 /* AppDelegate.swift in Sources */,
 				D065D42F2507C31A007C2413 /* Capacity.swift in Sources */,
-				D013AA1C25080E2500A78F53 /* NavigationController.swift in Sources */,
+				D013AA1C25080E2500A78F53 /* ParkingNavigationController.swift in Sources */,
 				D013AA1A2508089A00A78F53 /* ParkingDetailViewController.swift in Sources */,
 				D07B95BF25078C8E00005DD8 /* SceneDelegate.swift in Sources */,
 			);

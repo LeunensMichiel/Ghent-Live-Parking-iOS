@@ -5,41 +5,18 @@ import UIKit
 
 class ParkingListViewController: UIViewController {
     let tableView = UITableView()
-    let segmentedControl = UISegmentedControl(items: ["Alphabetically", "Location", "Availability"])
     let refreshControl = UIRefreshControl()
-    var safeArea: UILayoutGuide!
-    var parkingList: [Parking] = []
     let mapView = MKMapView()
+    let segmentedControl = UISegmentedControl(items: ["Alphabetically", "Location", "Availability"])
+    let parkingLabel = UILabel()
+    let noParkingsLabel = UILabel()
+
+    var safeArea: UILayoutGuide!
+    
     let locationManager = CLLocationManager()
+    
+    var parkingList: [Parking] = []
     var savedParking: ParkingDM?
-    
-    fileprivate func fetchParkings() {
-        let fetchParkings = { (fetchedParkings: [Parking]) in
-            DispatchQueue.main.async {
-                self.parkingList = fetchedParkings
-                self.sortParkings()
-                self.tableView.reloadData()
-                self.tableView.layoutIfNeeded()
-                self.tableView.heightAnchor.constraint(equalToConstant: self.tableView.contentSize.height).isActive = true
-                self.refreshControl.endRefreshing()
-            }
-        }
-        
-        ParkingAPI.parkingAPI.fetchParkingList(onComplete: fetchParkings)
-    }
-    
-    func registerForNotifications() {
-        NotificationCenter.default.addObserver(
-            forName: NSNotification.Name(rawValue: "parkingFetched"),
-            object: nil,
-            queue: nil) { notification in
-            if let uInfo = notification.userInfo, let fetchedParkings = uInfo["parkings"] as? [Parking] {
-                self.parkingList = fetchedParkings
-                self.sortParkings()
-                self.tableView.reloadData()
-            }
-        }
-    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -52,6 +29,7 @@ class ParkingListViewController: UIViewController {
         
         setupSegmentedControlView()
         setupTableView()
+        setupLabels()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -60,9 +38,11 @@ class ParkingListViewController: UIViewController {
             return
         }
         if localParking.isParked {
+            noParkingsLabel.removeFromSuperview()
             setupMapView()
         } else {
             mapView.removeFromSuperview()
+            view.addSubview(noParkingsLabel)
         }
     }
     
@@ -77,6 +57,8 @@ class ParkingListViewController: UIViewController {
         segmentedControl.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor).isActive = true
         
         segmentedControl.selectedSegmentIndex = 0
+        segmentedControl.selectedSegmentTintColor = UIColor(named: "AccentDark")
+        segmentedControl.setTitleTextAttributes([.foregroundColor: UIColor.white], for: .selected)
         
         segmentedControl.addTarget(self, action: #selector(segmentedControlValueChanged(_:)), for: .valueChanged)
         refreshControl.addTarget(self, action: #selector(refreshParkings(_:)), for: .valueChanged)
@@ -91,9 +73,11 @@ class ParkingListViewController: UIViewController {
         tableView.dataSource = self
         tableView.delegate = self
         tableView.register(ParkingCell.self, forCellReuseIdentifier: "cellId")
-        
+
+        tableView.separatorStyle = UITableViewCell.SeparatorStyle.none
+
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.topAnchor.constraint(equalTo: segmentedControl.bottomAnchor, constant: 16).isActive = true
+        tableView.topAnchor.constraint(equalTo: segmentedControl.bottomAnchor, constant: 32).isActive = true
         tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         
@@ -112,10 +96,30 @@ class ParkingListViewController: UIViewController {
         mapView.addAnnotation(parkingAnnotation)
         mapView.showsUserLocation = true
         mapView.translatesAutoresizingMaskIntoConstraints = false
-        mapView.topAnchor.constraint(equalTo: tableView.bottomAnchor, constant: 32).isActive = true
+        mapView.topAnchor.constraint(equalTo: parkingLabel.bottomAnchor, constant: 32).isActive = true
         mapView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         mapView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         mapView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+    }
+    
+    func setupLabels() {
+        view.addSubview(parkingLabel)
+        parkingLabel.text = "Jouw Parking"
+        parkingLabel.font = UIFont(name: "Nunito-Bold", size: 17)
+
+        parkingLabel.translatesAutoresizingMaskIntoConstraints = false
+        parkingLabel.topAnchor.constraint(equalTo: tableView.bottomAnchor, constant: 32).isActive = true
+        parkingLabel.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor).isActive = true
+        parkingLabel.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor).isActive = true
+        
+        view.addSubview(noParkingsLabel)
+        noParkingsLabel.text = "Je staat momenteel nergens geparkeerd."
+        noParkingsLabel.font = UIFont(name: "Nunito-Regular", size: 12)
+
+        noParkingsLabel.translatesAutoresizingMaskIntoConstraints = false
+        noParkingsLabel.topAnchor.constraint(equalTo: parkingLabel.bottomAnchor, constant: 32).isActive = true
+        noParkingsLabel.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor).isActive = true
+        noParkingsLabel.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor).isActive = true
     }
     
     // MARK: - Actions
@@ -192,7 +196,38 @@ class ParkingListViewController: UIViewController {
     func sortOnLocation(userLocation: CLLocation) {
         parkingList = parkingList.sortedByDistance(to: userLocation)
     }
+    
+    
+    // MARK: - ParkingAPI
+    fileprivate func fetchParkings() {
+        let fetchParkings = { (fetchedParkings: [Parking]) in
+            DispatchQueue.main.async {
+                self.parkingList = fetchedParkings
+                self.sortParkings()
+                self.tableView.reloadData()
+                self.tableView.layoutIfNeeded()
+                self.tableView.heightAnchor.constraint(equalToConstant: self.tableView.contentSize.height).isActive = true
+                self.refreshControl.endRefreshing()
+            }
+        }
+        
+        ParkingAPI.parkingAPI.fetchParkingList(onComplete: fetchParkings)
+    }
+    
+    func registerForNotifications() {
+        NotificationCenter.default.addObserver(
+            forName: NSNotification.Name(rawValue: "parkingFetched"),
+            object: nil,
+            queue: nil) { notification in
+            if let uInfo = notification.userInfo, let fetchedParkings = uInfo["parkings"] as? [Parking] {
+                self.parkingList = fetchedParkings
+                self.sortParkings()
+                self.tableView.reloadData()
+            }
+        }
+    }
 }
+
 
 // MARK: - UITableView DataSource
 
@@ -215,14 +250,12 @@ extension ParkingListViewController: UITableViewDataSource {
         
         let percentage = Double(used) / Double(parking.totalcapacity!)
         switch percentage {
-        case 0.25..<0.5:
-            parkingCell.availabilityLabel.textColor = .orange
-        case 0.5..<0.9:
-            parkingCell.availabilityLabel.textColor = .brown
+        case 0.66..<0.9:
+            parkingCell.status.backgroundColor = UIColor(named: "StatusOrange")
         case 0.9...1:
-            parkingCell.availabilityLabel.textColor = .red
+            parkingCell.status.backgroundColor = UIColor(named: "StatusRed")
         default:
-            parkingCell.availabilityLabel.textColor = .green
+            parkingCell.status.backgroundColor = UIColor(named: "StatusGreen")
         }
         
         return parkingCell
