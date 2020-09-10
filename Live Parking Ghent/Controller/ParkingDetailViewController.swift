@@ -5,8 +5,8 @@ import UIKit
 class ParkingDetailViewController: UIViewController {
     var selectedParking: Parking?
     var savedParking: ParkingDM?
-
     weak var delegate: ParkingListViewController!
+
     var safeArea: UILayoutGuide!
 
     let mapView = MKMapView()
@@ -20,10 +20,10 @@ class ParkingDetailViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        savedParking = CoreDataManager.sharedCoreData.fetchParkings()?.first
-
-        safeArea = view.layoutMarginsGuide
         view.backgroundColor = UIColor.white
+
+        savedParking = CoreDataManager.sharedCoreData.fetchParkings()?.first
+        safeArea = view.layoutMarginsGuide
 
         setupNameLabel()
         setupAvailabilityLabel()
@@ -37,6 +37,7 @@ class ParkingDetailViewController: UIViewController {
 
     func setupNameLabel() {
         view.addSubview(nameLabel)
+        
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
         nameLabel.topAnchor.constraint(equalTo: safeArea.topAnchor, constant: 32).isActive = true
         nameLabel.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor).isActive = true
@@ -71,6 +72,7 @@ class ParkingDetailViewController: UIViewController {
 
     func setupAddressLabel() {
         view.addSubview(addressLabel)
+        
         addressLabel.translatesAutoresizingMaskIntoConstraints = false
         addressLabel.topAnchor.constraint(equalTo: contactTitle.bottomAnchor, constant: 4).isActive = true
         addressLabel.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor).isActive = true
@@ -81,6 +83,7 @@ class ParkingDetailViewController: UIViewController {
 
     func setupContactLabel() {
         view.addSubview(contactLabel)
+        
         contactLabel.translatesAutoresizingMaskIntoConstraints = false
         contactLabel.topAnchor.constraint(equalTo: addressLabel.bottomAnchor, constant: 4).isActive = true
         contactLabel.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor).isActive = true
@@ -158,6 +161,10 @@ class ParkingDetailViewController: UIViewController {
         parkButton.backgroundColor = UIColor(named: savedParking!.isParked && savedParking!.id == selectedParking?.id ? "StatusRed" : "AccentDark")
     }
 }
+
+// MARK: - Controller Extensions
+// MARK: - Mapview
+
 
 extension ParkingDetailViewController: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {

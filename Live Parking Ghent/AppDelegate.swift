@@ -1,18 +1,9 @@
-//
-//  AppDelegate.swift
-//  Live Parking Ghent
-//
-//  Created by Michiel Leunens on 08/09/2020.
-//  Copyright © 2020 Leunes Media. All rights reserved.
-//
-
 import BackgroundTasks
 import UIKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
         BGTaskScheduler.shared.register(
             forTaskWithIdentifier: "com.leunesmedia.parkingfetch",
             using: nil) { task in

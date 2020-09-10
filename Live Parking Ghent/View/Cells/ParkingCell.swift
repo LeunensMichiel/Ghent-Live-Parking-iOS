@@ -1,11 +1,3 @@
-//
-//  ParkingCell.swift
-//  Live Parking Ghent
-//
-//  Created by Michiel Leunens on 08/09/2020.
-//  Copyright © 2020 Leunes Media. All rights reserved.
-//
-
 import UIKit
 
 class ParkingCell: UITableViewCell {
@@ -25,7 +17,7 @@ class ParkingCell: UITableViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
+    
     // MARK: - Setup
     
     func setupView() {
@@ -80,7 +72,6 @@ class ParkingCell: UITableViewCell {
         addSubview(wrapper)
         wrapper.axis = .horizontal
         wrapper.alignment = .leading
-        
         
         wrapper.translatesAutoresizingMaskIntoConstraints = false
         wrapper.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true

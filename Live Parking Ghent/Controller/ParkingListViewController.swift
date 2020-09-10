@@ -1,5 +1,4 @@
 import CoreData
-import CoreLocation
 import MapKit
 import UIKit
 
@@ -11,19 +10,21 @@ class ParkingListViewController: UIViewController {
     let parkingLabel = UILabel()
     let noParkingsLabel = UILabel()
     
+    let scrollView = UIScrollView()
+    let contentView = UIStackView()
     var safeArea: UILayoutGuide!
-    
-    let locationManager = CLLocationManager()
     
     var parkingList: [Parking] = []
     var savedParking: ParkingDM?
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         navigationItem.title = "Ghent Parking"
         view.backgroundColor = UIColor.white
-        safeArea = view.layoutMarginsGuide
         
+        safeArea = view.layoutMarginsGuide
+        setupScrollView()
         setupSegmentedControlView()
         setupTableView()
         setupParkingLabel()
@@ -49,11 +50,36 @@ class ParkingListViewController: UIViewController {
     
     // MARK: - Setup Views
     
+    func setupScrollView() {
+        view.addSubview(scrollView)
+        scrollView.contentInsetAdjustmentBehavior = .never
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        
+        scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        scrollView.topAnchor.constraint(equalTo: safeArea.topAnchor).isActive = true
+        scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+        scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        
+        scrollView.addSubview(contentView)
+        contentView.translatesAutoresizingMaskIntoConstraints = false
+        contentView.axis = .vertical
+        contentView.distribution = .equalCentering
+        contentView.alignment = .fill
+        
+        contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor).isActive = true
+        contentView.topAnchor.constraint(equalTo: scrollView.topAnchor).isActive = true
+        contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor).isActive = true
+        contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor).isActive = true
+        
+        // constrain width of stack view to width of self.view, NOT scroll view
+        contentView.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
+    }
+    
     func setupSegmentedControlView() {
-        view.addSubview(segmentedControl)
+        contentView.addArrangedSubview(segmentedControl)
         
         segmentedControl.translatesAutoresizingMaskIntoConstraints = false
-        segmentedControl.topAnchor.constraint(equalTo: safeArea.topAnchor, constant: 32).isActive = true
+        segmentedControl.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 32).isActive = true
         segmentedControl.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor).isActive = true
         segmentedControl.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor).isActive = true
         
@@ -66,7 +92,7 @@ class ParkingListViewController: UIViewController {
     }
     
     func setupTableView() {
-        view.addSubview(tableView)
+        contentView.addArrangedSubview(tableView)
         tableView.estimatedRowHeight = 64
         tableView.rowHeight = 64
         
@@ -79,12 +105,12 @@ class ParkingListViewController: UIViewController {
         
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.topAnchor.constraint(equalTo: segmentedControl.bottomAnchor, constant: 32).isActive = true
-        tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-        tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+        tableView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor).isActive = true
+        tableView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor).isActive = true
     }
     
     func setupMapView() {
-        view.addSubview(mapView)
+        contentView.addArrangedSubview(mapView)
         let initialLocation = CLLocation(latitude: savedParking!.latitude, longitude: savedParking!.longitude)
         mapView.centerToLocation(initialLocation)
         let parkingAnnotation = MKPointAnnotation()
@@ -94,13 +120,14 @@ class ParkingListViewController: UIViewController {
         mapView.showsUserLocation = true
         mapView.translatesAutoresizingMaskIntoConstraints = false
         mapView.topAnchor.constraint(equalTo: parkingLabel.bottomAnchor, constant: 8).isActive = true
-        mapView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        mapView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor).isActive = true
         mapView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-        mapView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        mapView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor).isActive = true
+        mapView.heightAnchor.constraint(greaterThanOrEqualToConstant: CGFloat(30)).isActive = true
     }
     
     func setupParkingLabel() {
-        view.addSubview(parkingLabel)
+        contentView.addArrangedSubview(parkingLabel)
         parkingLabel.text = "Jouw Parking"
         parkingLabel.font = UIFont(name: "Nunito-Bold", size: 17)
         
@@ -111,7 +138,7 @@ class ParkingListViewController: UIViewController {
     }
     
     func setupPlaceholderLabel() {
-        view.addSubview(noParkingsLabel)
+        contentView.addArrangedSubview(noParkingsLabel)
         noParkingsLabel.text = "Je staat momenteel nergens geparkeerd."
         noParkingsLabel.font = UIFont(name: "Nunito-Regular", size: 12)
         
@@ -133,7 +160,7 @@ class ParkingListViewController: UIViewController {
         fetchParkings()
     }
     
-    // MARK: - Setup Sorting
+    // MARK: - Sorting
     
     fileprivate func sortParkings() {
         switch segmentedControl.selectedSegmentIndex {
@@ -153,42 +180,31 @@ class ParkingListViewController: UIViewController {
     // MARK: - Location
     
     func checkLocationServices() {
-        if CLLocationManager.locationServicesEnabled() {
-            setupLocationManager()
+        if LocationService.shardedLocationService.checkLocationServices() {
+            LocationService.locationManager.delegate = self
             checkLocationAuthorisation()
         } else {
-            let alert = UIAlertController(title: "Location Denied", message: "For location functionality to work, enable location for this app in system permissions.", preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-            present(alert, animated: true)
+            ShowLocationDeniedAlert()
         }
-    }
-    
-    func setupLocationManager() {
-        locationManager.delegate = self
-        locationManager.desiredAccuracy = kCLLocationAccuracyBest
     }
     
     func checkLocationAuthorisation() {
         switch CLLocationManager.authorizationStatus() {
         case .notDetermined:
-            locationManager.requestWhenInUseAuthorization()
+            break
         case .restricted:
-            let alert = UIAlertController(title: "Location Restricted", message: "For location functionality to work, enable location for this app in system permissions.", preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-            present(alert, animated: true)
+            ShowLocationDeniedAlert()
         case .denied:
-            let alert = UIAlertController(title: "Location Denied", message: "For location functionality to work, enable location for this app in system permissions.", preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-            present(alert, animated: true)
+            ShowLocationDeniedAlert()
         case .authorizedAlways:
             break
         case .authorizedWhenInUse:
-            if let location = locationManager.location {
+            if let location = LocationService.locationManager.location {
                 if segmentedControl.selectedSegmentIndex == 1 {
                     sortOnLocation(userLocation: location)
                 }
             }
-            locationManager.startUpdatingLocation()
+            LocationService.locationManager.startUpdatingLocation()
             break
         @unknown default:
             break
@@ -197,6 +213,12 @@ class ParkingListViewController: UIViewController {
     
     func sortOnLocation(userLocation: CLLocation) {
         parkingList = parkingList.sortedByDistance(to: userLocation)
+    }
+    
+    fileprivate func ShowLocationDeniedAlert() {
+        let alert = UIAlertController(title: "Location Denied", message: "For location functionality to work, enable location for this app in system permissions.", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        present(alert, animated: true)
     }
     
     // MARK: - ParkingAPI
@@ -229,7 +251,9 @@ class ParkingListViewController: UIViewController {
     }
 }
 
-// MARK: - UITableView DataSource
+// MARK: - Controller Extensions
+
+// MARK: - UITableView DataSource and Delegation
 
 extension ParkingListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
